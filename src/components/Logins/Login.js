@@ -6,19 +6,23 @@ import {
   useSignInWithGithub,
   useSignInWithEmailAndPassword,
 } from "react-firebase-hooks/auth";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const auth = getAuth(app);
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const [signInWithGoogle] = useSignInWithGoogle(auth);
   const [signInWithGithub] = useSignInWithGithub(auth);
 
   const [signInWithEmailAndPassword, user] =
     useSignInWithEmailAndPassword(auth);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -31,11 +35,11 @@ const Login = () => {
     e.preventDefault();
 
     signInWithEmailAndPassword(email, password);
-
-    if (user?.email !== email) {
-      setError("User not exist");
-    }
   };
+
+  if (user) {
+    navigate(from, { replace: true });
+  }
 
   return (
     <div>
@@ -70,15 +74,18 @@ const Login = () => {
           className="border px-6 py-3 mb-6"
           required
         />
-        {error && (
-          <div className="px-6 py-2 bg-red-300 rounded-md my-4">{error}</div>
-        )}
         <button
           type="submit"
           className="bg-red-400 px-8 py-3 rounded-sm text-white"
         >
           Sign in
         </button>
+        <div className="mt-4">
+          Don't have account?{" "}
+          <Link to="/register" className="underline">
+            Register Now
+          </Link>
+        </div>
       </form>
     </div>
   );

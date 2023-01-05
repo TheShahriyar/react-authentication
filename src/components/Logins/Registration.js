@@ -6,7 +6,7 @@ import {
   useSignInWithGithub,
   useSignInWithGoogle,
 } from "react-firebase-hooks/auth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import app from "../../firebase.init";
 
 const auth = getAuth(app);
@@ -26,6 +26,8 @@ const Registration = () => {
   // const [updateProfile] = useUpdateProfile(auth);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleName = (e) => {
     setName(e.target.value);
@@ -57,7 +59,7 @@ const Registration = () => {
   };
 
   if (user) {
-    navigate("/home");
+    navigate(from, { replace: true });
   }
 
   return (
