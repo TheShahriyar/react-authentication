@@ -5,6 +5,7 @@ import {
   useCreateUserWithEmailAndPassword,
   useSignInWithGithub,
   useSignInWithGoogle,
+  useUpdateProfile,
 } from "react-firebase-hooks/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import app from "../../firebase.init";
@@ -23,7 +24,7 @@ const Registration = () => {
   const [createUserWithEmailAndPassword] =
     useCreateUserWithEmailAndPassword(auth);
   const [user] = useAuthState(auth);
-  // const [updateProfile] = useUpdateProfile(auth);
+  const [updateProfile] = useUpdateProfile(auth);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,7 +42,7 @@ const Registration = () => {
   const handleConfirmPassword = (e) => {
     setConfirmPassword(e.target.value);
   };
-  const handleCreateUserForm = (e) => {
+  const handleCreateUserForm = async (e) => {
     e.preventDefault();
     console.log("Form Submitted");
     if (password !== confirmPassword) {
@@ -53,7 +54,8 @@ const Registration = () => {
       return;
     }
 
-    createUserWithEmailAndPassword(email, password);
+    await createUserWithEmailAndPassword(email, password);
+    await updateProfile({ displayName: name });
 
     console.log(user);
   };
